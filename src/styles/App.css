@@ -123,3 +123,10 @@
     background-position: 0% 50%;
   }
 }
+
+.m-auto{
+  margin:0 30%;
+}
+.m-auto a{
+  text-decoration:none !important;
+}
