@@ -6,14 +6,13 @@ import myEpicNft from "./utils/MyEpicNFT.json";
 
 const TWITTER_HANDLE = "iotkelvin";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const OPENSEA_LINK = "";
-const TOTAL_MINT_COUNT = 50;
+// const OPENSEA_LINK = "";
+// const TOTAL_MINT_COUNT = 50;
 const CONTRACT_ADDRESS = "0x060996B147726ade4Fc20a7b2485b15F660b1835";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
-  // const { chainId } = await providers.getNetwork();
-  // const deployedNetwork = myEpicNft.networks[chainId];
+  const [totalMintCount, setTotalMintCount] = useState(0);
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -136,8 +135,38 @@ const App = () => {
         console.log("Mining...please wait.");
         await nftTxn.wait();
 
+        let totalMinted = await connectedContract.getTotalNFTsMintedSoFar();
+        setTotalMintCount(totalMinted)
         console.log(
           `Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
+        );
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  
+  const getTotalNFTsMintedSoFar = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const connectedContract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          myEpicNft.abi,
+          signer
+        );
+
+        console.log("Going to pop wallet now to pay gas...");
+        let totalMinted = await connectedContract.getTotalNFTsMintedSoFar();
+        setTotalMintCount(totalMinted)
+        console.log(
+          `Total NFTs Minted: ${totalMinted}`
         );
       } else {
         console.log("Ethereum object doesn't exist!");
@@ -159,6 +188,7 @@ const App = () => {
 
   useEffect(() => {
     checkIfWalletIsConnected();
+    getTotalNFTsMintedSoFar();
   }, []);
 
   /*
@@ -170,11 +200,12 @@ const App = () => {
         <div className="header-container">
           <p className="header gradient-text">My NFT Collection</p>
           <p className="sub-text">
-            Each unique. Each beautiful. Discover your NFT today.
+            Each Unique. Rare. Beautiful.
           </p>
+          <p className="header gradient-text text-40">{Number(totalMintCount)}/50 NFTs minted so far  </p>
           <div style={{ height: "fit-content" }} className="container m-auto">
             <a style={{ paddingTop: "20px" }}
-              href="https://testnets.opensea.io/collection/dinky-tales-v2"
+              href="https://testnets.opensea.io/collection/dinky-tales-v3"
               className="cta-button connect-wallet-button"
             >
               🌊 View Collection on OpenSea

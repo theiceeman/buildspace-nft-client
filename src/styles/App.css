@@ -130,3 +130,16 @@
 .m-auto a{
   text-decoration:none !important;
 }
+body{
+  font-family: 'Poppins', sans-serif;
+}
+button{
+  font-family: 'Poppins', sans-serif;
+}
+
+.container {
+  background-color: #1d3557;
+}
+.text-40{
+  font-size: 40px;
+}
